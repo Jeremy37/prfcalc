@@ -1,4 +1,4 @@
-#!/software/python-2.7.10/bin/python
+#!/usr/bin/env python
 ##
 ## prfcalc.py
 ## Created 2015-7-17 by Jeremy Schwartzentruber
@@ -23,15 +23,14 @@ import bx.bbi.bigwig_file
 parser = argparse.ArgumentParser(description="Given a set of SNPs and file listing annotations and their enrichments, calculates PRF scores for the SNPs.")
 
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument("--snpbed", type=file, metavar='FILE',
-					help="BED file of SNP positions to score")
+group.add_argument("--snpbed", type=file, metavar='FILE', help="BED file of SNP positions to score")
 group.add_argument("--range", type=str, help="Genomic range to get scores for, in the format 1:10000-11000")
 
 group2 = parser.add_mutually_exclusive_group(required=True)
-group2.add_argument("--annotparams", type=file, metavar='FILE',
-					help="file with list of annotations and their enrichments")
+group2.add_argument("--annotparams", type=file, metavar='FILE', help="file with list of annotations and their enrichments")
 group2.add_argument("--annotparamfiles", type=file, metavar='FILE',
 					help="file with list of annotparams files to use (i.e. names of files you would pass to --annotparams). ")
+parser.add_argument("--eid", type=str, help="EID to replace in annotparams file when {EID} is seen")
 parser.add_argument("--tssfile", type=file, metavar='FILE',
 					help="file with list of tss locations and associated genes")					
 parser.add_argument("--bsub", action='store_true', help="use bsub to submit annotation jobs for --annotparamfiles separately")
@@ -73,8 +72,11 @@ paramsDF = None
 paramVals = None
 paramDistBins = None
 snpGeneIDs = None
-tssDict = {}
+tssDictExpressed = {}
+tssDictNonExpressed = {}
 MAX_TSS_DIST = args.maxtssdist
+MIN_NON_EXPRESSED_TSS_DIST = 0
+
 #MAX_TSS_DIST = 5e5
 
 def main():
@@ -337,6 +339,10 @@ def readParams(paramsFile, outputRoot):
 			paramDistBins.append(distBins)
 			
 		else:
+			# Replace {EID} if it appears in the file name
+			if args.eid:
+				row.file = row.file.replace("{EID}", args.eid)
+			
 			# Check that each annotation file listed exists
 			if not os.path.isfile(row.file):
 				die("Annotation file \"{0}\" doesn't exist".format(row.file))
@@ -396,8 +402,11 @@ def readParams(paramsFile, outputRoot):
 def readTssFile(tssFile, outputRoot):
 	global tempFiles
 	global tssDict
+	global tssDictExpressed
+	global tssDictNonExpressed
 	global snpGeneIDs
 	tssChrs = {}
+	tssDict = {}
 	
 	if args.verbose:
 		sys.stderr.write("Reading TSS file: " + tssFile.name + "\n")
@@ -410,12 +419,27 @@ def readTssFile(tssFile, outputRoot):
 		#chr = lineVals[0]
 		#pos = int(lineVals[1])
 		geneID = lineVals[2]
-		if (geneID in tssDict):
-			tssDict[geneID].append(int(lineVals[1]))
+		tpm = lineVals[3]
+		if (tpm > 0):
+			if (geneID in tssDictExpressed):
+				tssDictExpressed[geneID].append(int(lineVals[1]))
+			else:
+				tssDictExpressed[geneID] = list([int(lineVals[1])])
 		else:
-			tssDict[geneID] = list([int(lineVals[1])])
-			tssChrs[geneID] = lineVals[0]
-	
+			if (geneID in tssDictNonExpressed):
+				tssDictNonExpressed[geneID].append(int(lineVals[1]))
+			else:
+				tssDictNonExpressed[geneID] = list([int(lineVals[1])])
+		tssChrs[geneID] = lineVals[0]
+		
+		# Merge expressed and non-expressed tssDicts together
+		tssDict = tssDictExpressed
+		for geneID in tssDictNonExpressed:
+			if (geneID in tssDict):
+				tssDict[geneID].append(tssDictNonExpressed[geneID])
+			else:
+				tssDict[geneID] = tssDictNonExpressed[geneID]
+		
 	# Write a BED file that has, for each gene, a window extending 1 Mb from the lowest
 	# TSS and 1 Mb from the highest TSS.
 	tssTable = []
@@ -818,9 +842,17 @@ def calcQuantAnnot(lambdaE, b0, b1, annotval):
 	return x
 
 
-def getSnpMinDist(geneID, snpPos):
+def getSnpMinDistOld(geneID, snpPos):
 	global tssDict
 	return min([abs(x-snpPos) for x in tssDict[geneID]])
+
+def getSnpMinDist(geneID, snpPos):
+	global tssDictExpressed
+	global tssDictNonExpressed
+	if geneID in tssDictExpressed:
+		return min([abs(x-snpPos) for x in tssDictExpressed[geneID]])
+	minval = min([abs(x-snpPos) for x in tssDictNonExpressed[geneID]])
+	return max(MIN_NON_EXPRESSED_TSS_DIST, minval)
 
 
 #@profile

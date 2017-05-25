@@ -1,0 +1,39 @@
+TSSDist	1.65734,2.5003,2.95271,3.38701,3.6071,3.9361,4.2492,3.9961,4.28026,4.58125,5.13625		tssdist	tssdist:85175-164468,49944-85174,33041-49943,21856-33040,15107-21855,10339-15106,6421-10338,3691-6420,1411-3690,286-1410,0-285	
+Dnase	2.39108,2.06237,2.06136	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-DNase.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/Dnase.norm.quantiles.txt	TRUE
+H3K36me3	1.11601,0.0391551,2.4245	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-H3K36me3.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/H3K36me3.norm.quantiles.txt	TRUE
+intron.diffgene	-0.55684	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.intron.bed	diffgene		TRUE
+UTR3.samegene	1.82209	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.UTR3.bed	samegene		TRUE
+coding.samegene	1.30089	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.coding.bed	samegene		TRUE
+intron.samegene	0.704254	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.intron.bed	samegene		TRUE
+UTR5.samegene	0.823983	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.UTR5.bed	samegene		TRUE
+25.Quies.t2	-0.492913	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.25.Quies.bed	bed	tssdist:6421-33040	TRUE
+25.Quies.t1	-0.398174	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.25.Quies.bed	bed	tssdist:0-6420	TRUE
+Enh.Fantom.tpm	1.76657,0.644076,0.553991	/lustre/scratch117/cellgen/team170/js29/annotations/FANTOM/epigenomes/out/{EID}.fantomEnh.bed	bedcol4	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/Enh.Fantom.tpm.norm.quantiles.txt	TRUE
+H3K4me3.t3	-0.940569	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/peaks/{EID}-H3K4me3.imputed.narrowPeak.bed	bed	tssdist:33041-1000000000	TRUE
+effect-snp.nmotifs	2.41372,2.78721,1.44563	/lustre/scratch117/cellgen/team170/js29/annotations/centisnp/centisnp.effect-snps.bed.gz	bedcol5	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/effect-snp.nmotifs.norm.quantiles.txt	TRUE
+H3K27ac	0.978484,0.480275,3.82161	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-H3K27ac.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/H3K27ac.norm.quantiles.txt	TRUE
+7.Tx3.t2	0.51722	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.7.Tx3.bed	bed	tssdist:6421-33040	TRUE
+GerpRS	1.24196,2.83096,3.26157	/lustre/scratch117/cellgen/team170/js29/reference/GERP/All_hg19_RS.bw	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/GerpRS.norm.quantiles.txt	TRUE
+H3K9me3	-1.57998,-0.544801,0.729243	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-H3K9me3.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/H3K9me3.norm.quantiles.txt	TRUE
+7.Tx3.t1	1.31893	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.7.Tx3.bed	bed	tssdist:0-6420	TRUE
+H3K4me1.t1	0.683083	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/peaks/{EID}-H3K4me1.imputed.narrowPeak.bed	bed	tssdist:0-6420	TRUE
+H3K27me3.t1	0.236857	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/peaks/{EID}-H3K27me3.imputed.gappedPeak.bed	bed	tssdist:0-6420	TRUE
+H3K4me3	0.582287,0.681653,4.69877	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-H3K4me3.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/H3K4me3.norm.quantiles.txt	TRUE
+UTR5.diffgene	-0.39785	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.UTR5.bed	diffgene		TRUE
+12.TxEnhW	-0.462796	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.12.TxEnhW.bed	bed		TRUE
+13.EnhA1	0.535006	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.13.EnhA1.bed	bed		TRUE
+H3K36me3.t1	-0.0244617	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/peaks/{EID}-H3K36me3.imputed.gappedPeak.bed	bed	tssdist:0-6420	TRUE
+6.Tx.t1	1.15749	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.6.Tx.bed	bed	tssdist:0-6420	TRUE
+DNAMethylSBS.fm	-2.73985,3.44043,0.790261	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-DNAMethylSBS.imputed.FractionalMethylation.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/DNAMethylSBS.fm.norm.quantiles.txt	TRUE
+H3K27me3.t2	-0.299897	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/peaks/{EID}-H3K27me3.imputed.gappedPeak.bed	bed	tssdist:6421-33040	TRUE
+H3K9ac	-2.367,3.91214,2.4937	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-H3K9ac.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/H3K9ac.norm.quantiles.txt	TRUE
+4.PromD2	-0.665725	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.4.PromD2.bed	bed		TRUE
+18.EnhAc	-1.10009	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.18.EnhAc.bed	bed		TRUE
+1.TssA.t3	-1.60906	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.1.TssA.bed	bed	tssdist:33041-1000000000	TRUE
+H3K4me1	-1.50247,1.62085,0.724055	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/signal/{EID}-H3K4me1.imputed.pval.signal.bigwig	bigwig	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/H3K4me1.norm.quantiles.txt	TRUE
+miRNA	-0.39951	/lustre/scratch117/cellgen/team170/js29/annotations/geneModels/gencode.v19.miRNA.bed	bed		TRUE
+5.Tx5	-0.124312	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.5.Tx5.bed	bed		TRUE
+24.ReprPC	-0.660308	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.24.ReprPC.bed	bed		TRUE
+H3K36me3.t2	0.449288	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/peaks/{EID}-H3K36me3.imputed.gappedPeak.bed	bed	tssdist:6421-33040	TRUE
+16.EnhW1.t2	0.404325	/lustre/scratch117/cellgen/team170/js29/annotations/Roadmap/imputed/segmentation/{EID}.16.EnhW1.bed	bed	tssdist:6421-33040	TRUE
+switch-snp.nmotifs	-0.17943,4.3033,-2.06308	/lustre/scratch117/cellgen/team170/js29/annotations/centisnp/centisnp.switch-snps.bed.gz	bedcol5	/lustre/scratch117/cellgen/team170/js29/prfscores/annot/switch-snp.nmotifs.norm.quantiles.txt	TRUE
