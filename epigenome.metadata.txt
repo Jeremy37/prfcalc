@@ -1,0 +1,120 @@
+Epigenome.ID	Group	SuperGroup	Epigenome.Mnemonic	Epigenome.shortName	Roadmap.Epigenome.name	FANTOM.tissue.name	Nearest.FANTOM.tissue	FANTOM.TSS.IDs	FANTOM.enhancer.IDs	FANTOM.enhancer
+E001	ESC	ESC	ESC.I3	ESC-I3	ES-I3 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E002	ESC	ESC	ESC.WA7	ESC-WA7	ES-WA7 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E003	ESC	ESC	ESC.H1	ESC-H1	H1 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E006	ES-deriv	ESC	ESDR.H1.MSC	H1 MSCs	H1 Derived Mesenchymal Stem Cells	mesenchymal stem cell line:Hu5/E18		CNhs11718	CNhs11718	yes
+E007	ES-deriv	Neuronal	ESDR.H1.NEUR.PROG	H1 NPCs	H1 Derived Neuronal Progenitor Cultured Cells		Neural stem cells	CNhs11063,CNhs11384	CNhs11063,CNhs11384	yes
+E008	ESC	ESC	ESC.H9	ESC-H9	H9 Cells	H9 Embryonic Stem cells		CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E009	ES-deriv	Neuronal	ESDR.H9.NEUR.PROG	H9 NPCs	H9 Derived Neuronal Progenitor Cultured Cells		Neural stem cells	CNhs11063,CNhs11384	CNhs11063,CNhs11384	yes
+E010	ES-deriv	Neuronal	ESDR.H9.NEUR	H9 neurons	H9 Derived Neuron Cultured Cells	iPS differentiation to neuron	-	CNhs13822,CNhs13826,CNhs13839	CNhs13822,CNhs13826,CNhs13839	Neurons;CNhs12338,CNhs12726,CNhs13815
+E011	ES-deriv	ESC	ESDR.CD184.ENDO	endoderm cells	hESC Derived CD184+ Endoderm Cultured Cells		neuroectodermal tumor cell line	CNhs11744,CNhs11753	CNhs11744,CNhs11753	yes
+E012	ES-deriv	ESC	ESDR.CD56.ECTO	ectoderm cells	hESC Derived CD56+ Ectoderm Cultured Cells		neuroectodermal tumor cell line	CNhs11744,CNhs11753	CNhs11744,CNhs11753	yes
+E013	ES-deriv	ESC	ESDR.CD56.MESO	mesoderm cells	hESC Derived CD56+ Mesoderm Cultured Cells		mesodermal tumor cell line	CNhs12191	CNhs12191	no
+E014	ESC	ESC	ESC.HUES48	ESC-HUES48	HUES48 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E015	ESC	ESC	ESC.HUES6	ESC-HUES6	HUES6 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E016	ESC	ESC	ESC.HUES64	ESC-HUES64	HUES64 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E017	IMR90	Other	LNG.IMR90	IMR90 lung	IMR90 fetal lung fibroblasts Cell Line		lung fetal donor1	CNhs11680	CNhs11680	yes
+E023	Mesench	Adipose	FAT.MSC.DR.ADIP	adipocyte cells	Mesenchymal Stem Cell Derived Adipocyte Cultured Cells	Adipocyte - subcutaneous	Adipocyte - subcutaneous	CNhs11051,CNhs11969	CNhs11051,CNhs11969	yes
+E024	ESC	ESC	ESC.4STAR	ESC-4STAR	ES-UCSF4 Cells		H9 Embryonic Stem cells	CNhs12824,CNhs12837	CNhs12824,CNhs12837	no
+E025	Mesench	Adipose	FAT.ADIP.DR.MSC	adipose MSCs	Adipose Derived Mesenchymal Stem Cell Cultured Cells	Mesenchymal Stem Cells - adipose		CNhs11345,CNhs12922	CNhs11345,CNhs12922	yes
+E026	Mesench	Bone	STRM.MRW.MSC	bone MSCs	Bone Marrow Derived Cultured Mesenchymal Stem Cells	Mesenchymal Stem Cells - bone marrow	mesenchymal precursor cell - bone marrow	CNhs12366,CNhs12367,CNhs13098	CNhs12366,CNhs12367,CNhs13098	yes
+E027	Epithelial	Epithelial	BRST.MYO	breast myoepithelial	Breast Myoepithelial Primary Cells	Mammary Epithelial Cell		CNhs11077,CNhs11382,CNhs12032	CNhs11077,CNhs11382,CNhs12032	yes
+E028	Epithelial	Epithelial	BRST.HMEC.35	breast vHMEC	Breast variant Human Mammary Epithelial Cells (vHMEC)	Mammary Epithelial Cell		CNhs11077,CNhs11382,CNhs12032	CNhs11077,CNhs11382,CNhs12032	yes
+E029	HSC & B-cell	Immune	BLD.CD14.PC	primary monocytes	Primary monocytes from peripheral blood	CD14+ Monocytes	CD14+CD16+ Monocytes;CD14+CD16- Monocytes	CNhs10852,CNhs11954,CNhs11997	CNhs10852,CNhs11954,CNhs11997	yes
+E030	HSC & B-cell	Immune	BLD.CD15.PC	primary neutrophils	Primary neutrophils from peripheral blood	Neutrophils		CNhs10862,CNhs11959,CNhs11905	CNhs10862,CNhs11959,CNhs11905	yes
+E031	HSC & B-cell	Immune	BLD.CD19.CPC	primary B cells-cord bl	Primary B cells from cord blood	CD19+ B Cells		CNhs12343,CNhs12352,CNhs12354	CNhs12343,CNhs12352,CNhs12354	yes
+E032	HSC & B-cell	Immune	BLD.CD19.PPC	primary B cells	Primary B cells from peripheral blood	CD19+ B Cells		CNhs12343,CNhs12352,CNhs12354	CNhs12343,CNhs12352,CNhs12354	yes
+E033	Blood & T-cell	Immune	BLD.CD3.CPC	pimary T cells-cord bl	Primary T cells from cord blood	CD8+ T Cells / CD4+ T Cells		CNhs10854,CNhs11956,CNhs11999,CNhs10853,CNhs11955,CNhs11998	CNhs10854,CNhs11956,CNhs11999,CNhs10853,CNhs11955,CNhs11998	yes
+E034	Blood & T-cell	Immune	BLD.CD3.PPC	primary T cells	Primary T cells from peripheral blood	CD8+ T Cells / CD4+ T Cells		CNhs10854,CNhs11956,CNhs11999,CNhs10853,CNhs11955,CNhs11998	CNhs10854,CNhs11956,CNhs11999,CNhs10853,CNhs11955,CNhs11998	yes
+E035	HSC & B-cell	Immune	BLD.CD34.PC	primary HSCs	Primary hematopoietic stem cells	CD34+ stem cells - adult bone marrow derived		CNhs12588	CNhs12588	yes
+E036	HSC & B-cell	Immune	BLD.CD34.CC	primary HSCs	Primary hematopoietic stem cells short term culture		CD34+ stem cells - adult bone marrow derived	CNhs12588	CNhs12588	
+E037	Blood & T-cell	Immune	BLD.CD4.MPC	primary Th memory	Primary T helper memory cells from peripheral blood 2	CD4+CD25-CD45RA- memory conventional T cells		CNhs13539,CNhs13215	CNhs13539,CNhs13215	yes
+E038	Blood & T-cell	Immune	BLD.CD4.NPC	primary Th naive	Primary T helper naive cells from peripheral blood	CD4+CD25-CD45RA+ naive conventional T cells		CNhs13223,CNhs13205,CNhs13512	CNhs13223,CNhs13205,CNhs13512	yes
+E039	Blood & T-cell	Immune	BLD.CD4.CD25M.CD45RA.NPC	primary Th naive	Primary T helper naive cells from peripheral blood	CD4+CD25-CD45RA+ naive conventional T cells		CNhs13223,CNhs13205,CNhs13512	CNhs13223,CNhs13205,CNhs13512	yes
+E040	Blood & T-cell	Immune	BLD.CD4.CD25M.CD45RO.MPC	primary Th memory	Primary T helper memory cells from peripheral blood 1	CD4+CD25-CD45RA- memory conventional T cells		CNhs13539,CNhs13215	CNhs13539,CNhs13215	yes
+E041	Blood & T-cell	Immune	BLD.CD4.CD25M.IL17M.PL.TPC	primary Th-PMA-stim	Primary T helper cells PMA-I stimulated		CD4+CD25-CD45RA+ naive conventional T cells	CNhs13223,CNhs13205,CNhs13512	CNhs13223,CNhs13205,CNhs13512	
+E042	Blood & T-cell	Immune	BLD.CD4.CD25M.IL17P.PL.TPC	primary Th17-PMA-stim	Primary T helper 17 cells PMA-I stimulated		CD4+CD25-CD45RA+ naive conventional T cells	CNhs13223,CNhs13205,CNhs13512	CNhs13223,CNhs13205,CNhs13512	
+E044	Blood & T-cell	Immune	BLD.CD4.CD25.CD127M.TREGPC	primary Treg	Primary T regulatory cells from peripheral blood	CD4+CD25+CD45RA- memory regulatory T cells		CNhs13195,CNhs13206,CNhs13538,CNhs13204,CNhs13811,CNhs13812	CNhs13195,CNhs13206,CNhs13538,CNhs13204,CNhs13811,CNhs13812	yes
+E045	Blood & T-cell	Immune	BLD.CD4.CD25I.CD127.TMEMPC	primary T effector	Primary T cells effector/memory enriched from peripheral blood	CD4+CD25-CD45RA- memory conventional T cells		CNhs13539,CNhs13215	CNhs13539,CNhs13215	yes
+E046	HSC & B-cell	Immune	BLD.CD56.PC	primary NK cells	Primary Natural Killer cells from peripheral blood	Natural Killer Cells		CNhs10859,CNhs11957,CNhs12001	CNhs10859,CNhs11957,CNhs12001	yes
+E047	Blood & T-cell	Immune	BLD.CD8.NPC	primary T CD8+ naive	Primary T CD8+ naive cells from peripheral blood	CD8+ T Cells		CNhs10854,CNhs11956,CNhs11999	CNhs10854,CNhs11956,CNhs11999	yes
+E048	Blood & T-cell	Immune	BLD.CD8.MPC	primary T CD8+ mem	Primary T CD8+ memory cells from peripheral blood	CD8+ T Cells		CNhs10854,CNhs11956,CNhs11999	CNhs10854,CNhs11956,CNhs11999	yes
+E049	Mesench	Bone	STRM.CHON.MRW.DR.MSC	MSC-der. chondrocytes	Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells	Chondrocyte - de diff		CNhs11923,CNhs11372,CNhs12020	CNhs11923,CNhs11372,CNhs12020	no
+E050	HSC & B-cell	Immune	BLD.MOB.CD34.PC.F	primary HSCs-GCSF-mob	Primary hematopoietic stem cells G-CSF-mobilized Female		CD34+ stem cells - adult bone marrow derived	CNhs12588	CNhs12588	
+E051	HSC & B-cell	Immune	BLD.MOB.CD34.PC.M	primary HSCs-GCSF-mob	Primary hematopoietic stem cells G-CSF-mobilized Male		CD34+ stem cells - adult bone marrow derived	CNhs12588	CNhs12588	
+E052	Myosat	Muscle	MUS.SAT	muscle satell. cells	Muscle Satellite Cultured Cells	Skeletal Muscle Satellite Cells		CNhs10869,CNhs11964,CNhs12008	CNhs10869,CNhs11964,CNhs12008	yes
+E053	Neurosph	Neuronal	BRN.CRTX.DR.NRSPHR	cortex-der. neurosph	Cortex derived primary cultured neurospheres		Astrocyte - cerebral cortex	CNhs10864,CNhs11960,CNhs12005	CNhs10864,CNhs11960,CNhs12005	yes
+E054	Neurosph	Neuronal	BRN.GANGEM.DR.NRSPHR	gangl em-der. neurosph	Ganglion Eminence derived primary cultured neurospheres		Astrocyte - cerebral cortex	CNhs10864,CNhs11960,CNhs12005	CNhs10864,CNhs11960,CNhs12005	yes
+E055	Epithelial	Epithelial	SKIN.PEN.FRSK.FIB.01	foreskin fibroblasts	Foreskin Fibroblast Primary Cells skin01	skin, fetal	penis, adult	CNhs11774	CNhs11774	no
+E056	Epithelial	Epithelial	SKIN.PEN.FRSK.FIB.02	foreskin fibroblasts	Foreskin Fibroblast Primary Cells skin02	skin, fetal	penis, adult	CNhs11774	CNhs11774	no
+E057	Epithelial	Epithelial	SKIN.PEN.FRSK.KER.02	foreskin keratinocytes	Foreskin Keratinocyte Primary Cells skin02	skin, fetal	penis, adult	CNhs11774	CNhs11774	no
+E058	Epithelial	Epithelial	SKIN.PEN.FRSK.KER.03	foreskin keratinocytes	Foreskin Keratinocyte Primary Cells skin03	skin, fetal	penis, adult	CNhs11774	CNhs11774	no
+E059	Epithelial	Epithelial	SKIN.PEN.FRSK.MEL.01	foreskin melanocytes	Foreskin Melanocyte Primary Cells skin01	skin, fetal	penis, adult	CNhs11774	CNhs11774	no
+E061	Epithelial	Epithelial	SKIN.PEN.FRSK.MEL.03	foreskin melanocytes	Foreskin Melanocyte Primary Cells skin03	skin, fetal	penis, adult	CNhs11774	CNhs11774	no
+E062	Blood & T-cell	Immune	BLD.PER.MONUC.PC	PBMCs	Primary mononuclear cells from peripheral blood	Peripheral Blood Mononuclear Cells		CNhs10860,CNhs11958,CNhs12002	CNhs10860,CNhs11958,CNhs12002	yes
+E063	Adipose	Adipose	FAT.ADIP.NUC	adipose nuclei	Adipose Nuclei	adipose tissue, adult		CNhs10615	CNhs10615	yes
+E065	Heart	Muscle	VAS.AOR	aorta	Aorta	aorta adult		CNhs11760	CNhs11760	yes
+E066	Other	Metabolic	LIV.ADLT	liver-adult	Liver	liver adult		CNhs10624	CNhs10624	yes
+E067	Brain	Neuronal	BRN.ANG.GYR	brain angular gyr	Brain Angular Gyrus		medial temporal gyrus adult	CNhs12310,CNhs13809	CNhs12310,CNhs13809	yes
+E068	Brain	Neuronal	BRN.ANT.CAUD	brain anterior caud	Brain Anterior Caudate	caudate nucleus adult		CNhs13802,CNhs12321	CNhs13802,CNhs12321	yes
+E069	Brain	Neuronal	BRN.CING.GYR	brain cingulate gyr	Brain Cingulate Gyrus		paracentral gyrus,postcentral gyrus,medial frontal gyrus	CNhs10642,CNhs10638,CNhs13796	CNhs10642,CNhs10638,CNhs13796	
+E070	Brain	Neuronal	BRN.GRM.MTRX	brain germinal mat	Brain Germinal Matrix		brain fetal	CNhs11797	CNhs11797	yes
+E071	Brain	Neuronal	BRN.HIPP.MID	brain hippocampus	Brain Hippocampus Middle	hippocampus adult		CNhs13795,CNhs12312	CNhs13795,CNhs12312	yes
+E072	Brain	Neuronal	BRN.INF.TMP	brain inf temp. lobe	Brain Inferior Temporal Lobe	temporal lobe adult		CNhs10637	CNhs10637	yes
+E073	Brain	Neuronal	BRN.DL.PRFRNTL.CRTX	brain DLP cortex	Brain_Dorsolateral_Prefrontal_Cortex		frontal lobe	CNhs10647	CNhs10647	yes
+E074	Brain	Neuronal	BRN.SUB.NIG	brain substantia nigra	Brain Substantia Nigra	substantia nigra, adult		CNhs12318	CNhs12318	yes
+E075	Digestive	Digestive	GI.CLN.MUC	colonic mucosa	Colonic Mucosa		Intestinal epithelial cells (polarized);normal intestinal epithelial cell line;small intestine adult	CNhs10875,CNhs11950,CNhs10630	CNhs10875,CNhs11950,CNhs10630	yes
+E076	Sm. Muscle	Digestive	GI.CLN.SM.MUS	colon sm muscle	Colon Smooth Muscle		smooth muscle adult	CNhs11755	CNhs11755	yes
+E077	Digestive	Digestive	GI.DUO.MUC	duodenum mucosa	Duodenum Mucosa		duodenum fetal	CNhs11781,CNhs12996	CNhs11781,CNhs12996	yes
+E078	Sm. Muscle	Digestive	GI.DUO.SM.MUS	duodenum sm muscle	Duodenum Smooth Muscle		smooth muscle adult	CNhs11755	CNhs11755	yes
+E079	Digestive	Digestive	GI.ESO	esophagus	Esophagus	esophagus adult		CNhs10620	CNhs10620	yes
+E080	Other	Metabolic	ADRL.GLND.FET	fetal adrenal gland	Fetal Adrenal Gland		adrenal cortex adenocarcinoma cell line	CNhs11893	CNhs11893	yes
+E081	Brain	Neuronal	BRN.FET.M	fetal brain-M	Fetal Brain Male	brain fetal		CNhs11797	CNhs11797	yes
+E082	Brain	Neuronal	BRN.FET.F	fetal brain-F	Fetal Brain Female	brain fetal		CNhs11797	CNhs11797	yes
+E083	Heart	Muscle	HRT.FET	fetal heart	Fetal Heart	heart fetal		CNhs10653	CNhs10653	yes
+E084	Digestive	Digestive	GI.L.INT.FET	fetal intestine-lg	Fetal Intestine Large	colon fetal		CNhs11780	CNhs11780	yes
+E085	Digestive	Digestive	GI.S.INT.FET	fetal intestine-sm	Fetal Intestine Small	small intestine fetal		CNhs11773	CNhs11773	yes
+E086	Other	Metabolic	KID.FET	fetal kidney	Fetal Kidney	kidney fetal		CNhs10652	CNhs10652	yes
+E087	Other	Metabolic	PANC.ISLT	pancreas islets	Pancreatic Islets		pancreas, adult;Pancreatic stromal cells	CNhs11756,CNhs10877	CNhs11756,CNhs10877	yes
+E088	Other	Other	LNG.FET	fetal lung	Fetal Lung	lung fetal		CNhs11680	CNhs11680	yes
+E089	Muscle	Muscle	MUS.TRNK.FET	fetal muscle-trunk	Fetal Muscle Trunk	skeletal muscle fetal		CNhs11776	CNhs11776	yes
+E090	Muscle	Muscle	MUS.LEG.FET	fetal muscle-leg	Fetal Muscle Leg	skeletal muscle fetal		CNhs11776	CNhs11776	yes
+E091	Other	Other	PLCNT.FET	placenta	Placenta	placenta, adult		CNhs10627	CNhs10627	yes
+E092	Digestive	Digestive	GI.STMC.FET	fetal stomach	Fetal Stomach	stomach fetal		CNhs11771	CNhs11771	yes
+E093	Thymus	Immune	THYM.FET	fetal thymus	Fetal Thymus	thymus, fetal		CNhs10650	CNhs10650	yes
+E094	Digestive	Digestive	GI.STMC.GAST	gastric	Gastric		multiple gastric cancer cell lines	CNhs11819,CNhs11286	CNhs11819,CNhs11286	yes
+E095	Heart	Muscle	HRT.VENT.L	left ventricle	Left Ventricle	left ventricle adult	heart adult	CNhs11789	CNhs11789	yes
+E096	Other	Other	LNG	lung	Lung	lung adult		CNhs10625	CNhs10625	yes
+E097	Other	Other	OVRY	ovary	Ovary	ovary adult		CNhs10626	CNhs10626	yes
+E098	Other	Other	PANC	pancreas	Pancreas	pancreas, adult	Pancreatic stromal cells	CNhs11756,CNhs10877	CNhs11756,CNhs10877	yes
+E099	Other	Other	PLCNT.AMN	placenta amnion	Placenta Amnion	amniotic membrane cells	Amniotic Epithelial Cells	CNhs12502,CNhs12503,CNhs12379	CNhs12502,CNhs12503,CNhs12379	yes
+E100	Muscle	Muscle	MUS.PSOAS	psoas muscle	Psoas Muscle		skeletal muscle adult	CNhs10629	CNhs10629	yes
+E101	Digestive	Digestive	GI.RECT.MUC.29	rectal mucosa	Rectal Mucosa Donor 29		rectum fetal	CNhs11777	CNhs11777	yes
+E102	Digestive	Digestive	GI.RECT.MUC.31	rectal mucosa	Rectal Mucosa Donor 31		rectum fetal	CNhs11777	CNhs11777	yes
+E103	Sm. Muscle	Digestive	GI.RECT.SM.MUS	rectal sm muscle	Rectal Smooth Muscle		smooth muscle adult	CNhs11755	CNhs11755	yes
+E104	Heart	Muscle	HRT.ATR.R	right atrium	Right Atrium	left atrium adult	heart adult	CNhs11790	CNhs11790	yes
+E105	Heart	Muscle	HRT.VNT.R	right ventricle	Right Ventricle		heart adult	CNhs10621	CNhs10621	yes
+E106	Digestive	Digestive	GI.CLN.SIG	sigmoid colon	Sigmoid Colon	colon adult		CNhs11794,CNhs10619	CNhs11794,CNhs10619	yes
+E107	Muscle	Muscle	MUS.SKLT.M	skeletal muscle-M	Skeletal Muscle Male	skeletal muscle adult		CNhs10629	CNhs10629	yes
+E108	Muscle	Muscle	MUS.SKLT.F	skeletal muscle-F	Skeletal Muscle Female	skeletal muscle adult		CNhs10629	CNhs10629	yes
+E109	Digestive	Digestive	GI.S.INT	sm intestine	Small Intestine	small intestine adult		CNhs10630	CNhs10630	yes
+E110	Digestive	Digestive	GI.STMC.MUC	stomach mucosa	Stomach Mucosa		Intestinal epithelial cells (polarized);normal intestinal epithelial cell line;small intestine adult	CNhs10875,CNhs11950,CNhs10630	CNhs10875,CNhs11950,CNhs10630	yes
+E111	Sm. Muscle	Digestive	GI.STMC.MUS	stomach sm muscle	Stomach Smooth Muscle		smooth muscle adult	CNhs11755	CNhs11755	yes
+E112	Thymus	Immune	THYM	thymus	Thymus	thymus, adult		CNhs10633	CNhs10633	yes
+E113	Other	Immune	SPLN	spleen	Spleen	spleen adult	spleen fetal	CNhs10631,CNhs10651	CNhs10631,CNhs10651	yes
+E114	ENCODE2012	Other	LNG.A549.ETOH002.CNCR	A549-lung carcinoma	A549 EtOH 0.02pct Lung Carcinoma Cell Line	squamous, small cell, large cell lung carcinoma cell lines		CNhs11277,CNhs11275,CNhs12808	CNhs11277,CNhs11275,CNhs12808	yes
+E115	ENCODE2012	Immune	BLD.DND41.CNCR	Dnd41-leukemia	Dnd41 TCell Leukemia Cell Line	adult T-cell leukemia cell line	T-CLL cell line;NK T cell leukemia cell line;T-ALL cell line	CNhs10738	CNhs10738	yes
+E116	ENCODE2012	Immune	BLD.GM12878	GM12878 LCL	GM12878 Lymphoblastoid Cells	B lymphoblastoid cell line: GM12878		CNhs12331,CNhs12332,CNhs12333	CNhs12331,CNhs12332,CNhs12333	yes
+E117	ENCODE2012	Other	CRVX.HELAS3.CNCR	HeLa-S3 carcinoma	HeLa-S3 Cervical Carcinoma Cell Line	cervix adult	cervical cancer cell line	CNhs10618,CNhs11288,CNhs11289	CNhs10618,CNhs11288,CNhs11289	yes
+E118	ENCODE2012	Metabolic	LIV.HEPG2.CNCR	HepG2 hepatoc. carcin.	HepG2 Hepatocellular Carcinoma Cell Line	Hepatocyte;hepatocellular carcinoma cell line		CNhs12340,CNhs12349,CNhs12626	CNhs12340,CNhs12349,CNhs12626	yes
+E119	ENCODE2012	Epithelial	BRST.HMEC	HMEC	HMEC Mammary Epithelial Primary Cells	Mammary Epithelial Cell		CNhs11077,CNhs11382,CNhs12032	CNhs11077,CNhs11382,CNhs12032	yes
+E120	ENCODE2012	Muscle	MUS.HSMM	HSMM myoblasts	HSMM Skeletal Muscle Myoblasts Cells	Myoblast		CNhs10870,CNhs11965,CNhs11908	CNhs10870,CNhs11965,CNhs11908	yes
+E121	ENCODE2012	Epithelial	MUS.HSMMT	HSMM myotubes	HSMM cell derived Skeletal Muscle Myotubes Cells	Skeletal muscle cells differentiated into Myotubes		CNhs11084	CNhs11084	yes
+E122	ENCODE2012	Epithelial	VAS.HUVEC	HUVEC umbilical vein	HUVEC Umbilical Vein Endothelial Primary Cells	Endothelial Cells - Umbilical vein		CNhs10872,CNhs11967,CNhs12010	CNhs10872,CNhs11967,CNhs12010	yes
+E123	ENCODE2012	Immune	BLD.K562.CNCR	K562 leukaemia	K562 Leukemia Cells	K562		CNhs11250,CNhs12334,CNhs12335,CNhs12336	CNhs11250,CNhs12334,CNhs12335,CNhs12336	yes
+E124	ENCODE2012	Immune	BLD.CD14.MONO	primary monocytes	Monocytes-CD14+ RO01746 Primary Cells	CD14+ Monocytes	multiple stimulation conditions	CNhs10852,CNhs11954,CNhs11997	CNhs10852,CNhs11954,CNhs11997	yes
+E125	ENCODE2012	Neuronal	BRN.NHA	primary astrocytes	NH-A Astrocytes Primary Cells	Astrocyte - cerebellum;Astrocyte - cerebral cortex	astrocytoma cell line	CNhs11321,CNhs12081,CNhs12117,CNhs10864,CNhs11960,CNhs12005	CNhs11321,CNhs12081,CNhs12117,CNhs10864,CNhs11960,CNhs12005	yes
+E126	ENCODE2012	Epithelial	SKIN.NHDFAD	adult dermal fibroblasts	NHDF-Ad Adult Dermal Fibroblast Primary Cells	Fibroblast - Dermal		CNhs12499,CNhs11379,CNhs12028,CNhs12052,CNhs12055,CNhs12059	CNhs12499,CNhs11379,CNhs12028,CNhs12052,CNhs12055,CNhs12059	yes
+E127	ENCODE2012	Epithelial	SKIN.NHEK	Nhek epideral kerat.	NHEK-Epidermal Keratinocyte Primary Cells	Keratinocyte - epidermal		CNhs11064,CNhs11381,CNhs12031	CNhs11064,CNhs11381,CNhs12031	yes
+E128	ENCODE2012	Other	LNG.NHLF	NHLF lung fibroblasts	NHLF Lung Fibroblast Primary Cells		Fibroblast - skin normal;lung adult;lung right lower lobe adult	CNhs10625	CNhs10625	yes
+E129	ENCODE2012	Bone	BONE.OSTEO	primary osteoblasts	Osteoblast Primary Cells	Osteoblast	Osteoblast - differentiated	CNhs11385,CNhs12036	CNhs11385,CNhs12036	yes
