@@ -26,14 +26,13 @@ group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument("--snpbed", type=file, metavar='FILE', help="BED file of SNP positions to score")
 group.add_argument("--range", type=str, help="Genomic range to get scores for, in the format 1:10000-11000")
 
-group2 = parser.add_mutually_exclusive_group(required=True)
-group2.add_argument("--annotparams", type=file, metavar='FILE', help="file with list of annotations and their enrichments")
-group2.add_argument("--annotparamfiles", type=file, metavar='FILE',
-					help="file with list of annotparams files to use (i.e. names of files you would pass to --annotparams). ")
+parser.add_argument("--annotparams", type=file, metavar='FILE', help="file with list of annotations and their enrichments")
+parser.add_argument("--eidfile", type=file, metavar='FILE',
+					help="file with list of EIDs to generate scores for use, one per line")
 parser.add_argument("--eid", type=str, help="EID to replace in annotparams file when {EID} is seen")
-parser.add_argument("--tssfile", type=file, metavar='FILE',
+parser.add_argument("--tssfile", type=str, metavar='FILE',
 					help="file with list of tss locations and associated genes")					
-parser.add_argument("--bsub", action='store_true', help="use bsub to submit annotation jobs for --annotparamfiles separately")
+parser.add_argument("--bsub", action='store_true', help="use bsub to submit annotation jobs for --eidlist separately")
 
 parser.add_argument("--pergene", action='store_true',
 					help="output PRF scores per gene in a separate output file. PRF 'singlescore' (max PRF score across genes) are still output per SNP.")
@@ -48,6 +47,7 @@ parser.add_argument("--qctest", type=str,
 parser.add_argument("--output", type=str, default="out", help="root name/path for output files")
 parser.add_argument("--xoutput", action='store_true', help="output X values per annotation for the gene with highest PRF score")
 parser.add_argument("--debug", action='store_true', help="print additional debugging information")
+parser.add_argument("--nocleanup", action='store_true', help="When computing scores for multiple EIDs, don't cleanup individual files")
 parser.add_argument('--verbose', '-v', action='count')
 parser.add_argument("--norun", action='store_true', help="don't run external commands (e.g. bedtools)")
 
@@ -81,6 +81,7 @@ MIN_NON_EXPRESSED_TSS_DIST = 0
 
 def main():
 	global tempFiles
+	
 	try:
 		if args.range:
 			tempSnpBedName = makeBedFromRange("tempSnpBed", args.range)
@@ -89,8 +90,8 @@ def main():
 		else:
 			snpBedFile = openg(args.snpbed)
 		
-		if args.annotparamfiles:
-			handleAnnotParamFiles(snpBedFile, args.annotparamfiles)
+		if args.eidfile:
+			handleEIDList(snpBedFile, args.eidfile)
 		else:
 			# args.annotparams should be set
 			doPrfcalc(snpBedFile, args.annotparams, args.output)
@@ -104,24 +105,24 @@ def main():
 			os.remove(fname)
 
 
-def handleAnnotParamFiles(snpBedFile, annotparamfiles):
+def handleEIDList(snpBedFile, eidfile):
 	global tempFiles
-	annotparamfileLines = [l.strip() for l in annotparamfiles.readlines()]
-	if len(annotparamfileLines) < 1:
-		die("No lines in --annotparamfiles file: {0}".format(annotparamfiles.name))
+	eidfileLines = [l.strip() for l in eidfile.readlines()]
+	if len(eidfileLines) < 1:
+		die("No lines in --eidfile file: {0}".format(eidfile.name))
 		
 	if args.bsub:
 		# First create the "chr" or "nochr" version of the Bed file in a single
 		# process before multiple jobs are submitted, to avoid race condition
 		readSnpFile(snpBedFile)
 	
-	for i,line in enumerate(annotparamfileLines):
-		epigenomeID,annotparamFile,tssFile = line.split("\t")
+	for i,epigenomeID in enumerate(eidfileLines):
+		tssFile = args.tssfile.replace("{EID}", epigenomeID)
 		outputArg = args.output + (".{0}".format(epigenomeID))
 		perGeneArg = "--pergene" if args.pergene else ""
 		verboseArg = "-" + 'v' * args.verbose
 		debugArg = "--debug" if args.debug else ""
-		prfcalcCmd = "prfcalc.py --output {0} --snpbed {1} --tssfile {2} --annotparams {3} {4} {5} {6}".format(outputArg, snpBedFile.name, tssFile, annotparamFile, perGeneArg, verboseArg, debugArg)
+		prfcalcCmd = "prfcalc.py --output {0} --snpbed {1} --tssfile {2} --annotparams {3} --eid {4} {5} {6} {7}".format(outputArg, snpBedFile.name, tssFile, args.annotparams.name, epigenomeID, perGeneArg, verboseArg, debugArg)
 		
 		outputFname = args.output + ".{0}.singlescore.txt.gz".format(epigenomeID)
 		if os.path.isfile(outputFname):
@@ -130,9 +131,9 @@ def handleAnnotParamFiles(snpBedFile, annotparamfiles):
 			
 		if args.bsub:
 			jobname = "prfcalc.sub.{0}".format(epigenomeID)
-			if not os.path.exists("farmOut"):
-				os.makedirs("farmOut")
-			farmOut = "farmOut/{0}.%J.txt".format(jobname)
+			if not os.path.exists("FarmOut"):
+				os.makedirs("FarmOut")
+			farmOut = "FarmOut/{0}.%J.txt".format(jobname)
 			mem = 2000
 			memoryString = '-R"span[hosts=1] select[mem>' + str(mem) +'] rusage[mem=' + str(mem) + ']" -M ' + str(mem)
 			#bsubCmd = "bsub -G team170 -J {0} -o {1} -q normal {2} {3}".format(jobname, farmOut, memoryString, prfcalcCmd)
@@ -140,30 +141,30 @@ def handleAnnotParamFiles(snpBedFile, annotparamfiles):
 			docall(bsubCmd)
 		else:
 			docall(prfcalcCmd)
-			#with open(annotparamFile) as paramsFile:
-			#	doPrfcalc(snpBedFile, paramsFile, args.output + (".%d" % i))
-
+		
 	if args.bsub:
 		# Wait for all submitted jobs to finish, so that we can merge the results together
 		jobname = "prfcalc.bsub.wait"
 		waitCmd = "echo 'done'"
 		memoryString = "-R\"span[hosts=1] select[mem>{0}] rusage[mem={0}]\" -M {0}".format(str(100))
-		#bsubCmd = "bsub -G team170 -J {0} -o farmOut/{0}.%J.txt -q normal {1} -K -w \"ended('prfcalc.sub.*')\" {2}".format(jobname, memoryString, waitCmd)
-		bsubCmd = "bsub -J {0} -o farmOut/{0}.%J.txt -q normal {1} -K -w \"ended('prfcalc.sub.*')\" {2}".format(jobname, memoryString, waitCmd)
+		#bsubCmd = "bsub -G team170 -J {0} -o FarmOut/{0}.%J.txt -q normal {1} -K -w \"ended('prfcalc.sub.*')\" {2}".format(jobname, memoryString, waitCmd)
+		bsubCmd = "bsub -J {0} -o FarmOut/{0}.%J.txt -q normal {1} -K -w \"ended('prfcalc.sub.*')\" {2}".format(jobname, memoryString, waitCmd)
 		docall(bsubCmd)
 		
 	# All jobs should be done now. We can merge together the output files.
 	header = "chr\tpos\tsnp"
-	pasteCmd = "paste <(cut -f 1,3,4 {0})".format(snpBedFile.name)
-	for i,line in enumerate(annotparamfileLines):
-		epigenomeID,annotparamFile,tssFile = line.split("\t")
+	catCmd = "cat"
+	if isgzfile(snpBedFile.name):
+		catCmd = "zcat"
+	pasteCmd = "paste <({0} {1} | cut -f 1,3,4)".format(catCmd, snpBedFile.name)
+	for i,epigenomeID in enumerate(eidfileLines):
 		outputFname = args.output + ".{0}.singlescore.txt.gz".format(epigenomeID)
 		header += "\t{0}_PRF\t{0}_geneID".format(epigenomeID)
 		pasteCmd += " <(zcat {0} | sed '1d' | cut -f 4,5)".format(outputFname)
 		#getGenesCmd += " <(zcat {0} | cut -f 5)".format(outputFname)
 		if not os.path.isfile(outputFname):
 			die("Expected output file from prfcalc.py subcommand is missing: {0}".format(outputFname))
-		if not args.debug:
+		if not args.nocleanup:
 			tempFiles.append(outputFname)
 	
 	mergedOutputFname = args.output + ".merged.singlescore.txt.gz"
@@ -255,7 +256,7 @@ def readSnpFile(snpBedFile):
 	snpPositions = snpDF.start.values
 	for i in xrange(1, len(snpDF.index)):
 		if snpChrs[i] == snpChrs[i-1] and int(snpPositions[i]) < int(snpPositions[i-1]):
-			sys.stderr.write("Warning: SNP bed file coordinates are not in sorted order. Line number {0} found out of order:\n{1}\n".format(i, str(snpDF.iloc[i,:])))
+			sys.stderr.write("Warning: SNP bed file coordinates are not in sorted order. Line number {0} found out of order:\n{1}\n".format(i+1, str(snpDF.iloc[i,:])))
 			break
 	if args.verbose: sys.stderr.write("Finished reading SNP bed file: {0}. Got {1} SNPs.\n".format(snpBedFile.name, len(snpDF.index)))
 	
@@ -409,75 +410,76 @@ def readTssFile(tssFile, outputRoot):
 	tssDict = {}
 	
 	if args.verbose:
-		sys.stderr.write("Reading TSS file: " + tssFile.name + "\n")
+		sys.stderr.write("Reading TSS file: " + tssFile + "\n")
 	
 	# First read in all TSSes. Check that they are sorted by position
-	for linestr in tssFile:
-		lineVals = linestr.strip().split('\t')
-		#if (len(lineVals) < 3):
-		#	continue
-		#chr = lineVals[0]
-		#pos = int(lineVals[1])
-		geneID = lineVals[2]
-		tpm = lineVals[3]
-		if (tpm > 0):
-			if (geneID in tssDictExpressed):
-				tssDictExpressed[geneID].append(int(lineVals[1]))
+	with open(tssFile, "r") as tssf:
+		for linestr in tssf:
+			lineVals = linestr.strip().split('\t')
+			#if (len(lineVals) < 3):
+			#	continue
+			#chr = lineVals[0]
+			#pos = int(lineVals[1])
+			geneID = lineVals[2]
+			tpm = lineVals[3]
+			if (tpm > 0):
+				if (geneID in tssDictExpressed):
+					tssDictExpressed[geneID].append(int(lineVals[1]))
+				else:
+					tssDictExpressed[geneID] = list([int(lineVals[1])])
 			else:
-				tssDictExpressed[geneID] = list([int(lineVals[1])])
-		else:
-			if (geneID in tssDictNonExpressed):
-				tssDictNonExpressed[geneID].append(int(lineVals[1]))
-			else:
-				tssDictNonExpressed[geneID] = list([int(lineVals[1])])
-		tssChrs[geneID] = lineVals[0]
+				if (geneID in tssDictNonExpressed):
+					tssDictNonExpressed[geneID].append(int(lineVals[1]))
+				else:
+					tssDictNonExpressed[geneID] = list([int(lineVals[1])])
+			tssChrs[geneID] = lineVals[0]
 		
-		# Merge expressed and non-expressed tssDicts together
-		tssDict = tssDictExpressed
-		for geneID in tssDictNonExpressed:
-			if (geneID in tssDict):
-				tssDict[geneID].append(tssDictNonExpressed[geneID])
-			else:
-				tssDict[geneID] = tssDictNonExpressed[geneID]
+			# Merge expressed and non-expressed tssDicts together
+			tssDict = tssDictExpressed
+			for geneID in tssDictNonExpressed:
+				if (geneID in tssDict):
+					tssDict[geneID].append(tssDictNonExpressed[geneID])
+				else:
+					tssDict[geneID] = tssDictNonExpressed[geneID]
 		
-	# Write a BED file that has, for each gene, a window extending 1 Mb from the lowest
-	# TSS and 1 Mb from the highest TSS.
-	tssTable = []
-	rowindex = 0
-	for geneID in tssDict:
-		minTSS = min(tssDict[geneID])
-		minPos = int(max(0, minTSS - MAX_TSS_DIST))
-		maxPos = int(max(tssDict[geneID]) + MAX_TSS_DIST)
-		tssTable.append([tssChrs[geneID], minPos, maxPos, geneID, minTSS])
+		# Write a BED file that has, for each gene, a window extending 1 Mb from the lowest
+		# TSS and 1 Mb from the highest TSS.
+		tssTable = []
+		rowindex = 0
+		for geneID in tssDict:
+			minTSS = min(tssDict[geneID])
+			minPos = int(max(0, minTSS - MAX_TSS_DIST))
+			maxPos = int(max(tssDict[geneID]) + MAX_TSS_DIST)
+			tssTable.append([tssChrs[geneID], minPos, maxPos, geneID, minTSS])
 	
-	tssDF = pd.DataFrame(tssTable, columns=['chr','start','end','geneID','minTSS'])
-	tssDF[['chr','geneID']] = tssDF[['chr','geneID']].astype(str)
-	tssDF[['start','end','minTSS']] = tssDF[['start','end','minTSS']].astype(np.int32)
+		tssDF = pd.DataFrame(tssTable, columns=['chr','start','end','geneID','minTSS'])
+		tssDF[['chr','geneID']] = tssDF[['chr','geneID']].astype(str)
+		tssDF[['start','end','minTSS']] = tssDF[['start','end','minTSS']].astype(np.int32)
 	
-	generangeFname = outputRoot + '.tss.generange.bed'
-	tssDF_sorted = tssDF.sort(['chr', 'minTSS'], ascending=[1, 1])
-	tssDF_sorted[['chr','start','end','geneID']].to_csv(generangeFname, sep='\t', header=False, index=False)
-	tempFiles.append(generangeFname)
+		generangeFname = outputRoot + '.tss.generange.bed'
+		tssDF_sorted = tssDF.sort(['chr', 'minTSS'], ascending=[1, 1])
+		tssDF_sorted[['chr','start','end','geneID']].to_csv(generangeFname, sep='\t', header=False, index=False)
+		tempFiles.append(generangeFname)
 	
-	# Use the generated file with bedtools to get the set of genes overlapping each SNP
-	hasChr = (re.search("chr", tssDF.chr[0]) is not None)
-	snpBed = (snpBedChr if hasChr else snpBedNoChr)
+		# Use the generated file with bedtools to get the set of genes overlapping each SNP
+		hasChr = (re.search("chr", tssDF.chr[0]) is not None)
+		snpBed = (snpBedChr if hasChr else snpBedNoChr)
 	
-	global snpDF
-	cmd = "bedtools intersect -a {0} -b {1} -loj".format(snpBed, generangeFname)
-	output = docheckoutput(cmd)
-	snpGeneIDs = accumulateGeneOverlaps(output, len(snpDF.columns))
-	gc.collect()
-	numSnpRows = len(snpDF.index)
-	if (len(snpGeneIDs) != numSnpRows):
-		die("Unexpected number of gene ID values returned from accumulateGeneOverlaps. Got {0}, expected {1}. This can happen if there are duplicate SNP positions in the input. All SNP positions should be unique.".format(len(snpGeneIDs), numSnpRows))
+		global snpDF
+		cmd = "bedtools intersect -a {0} -b {1} -loj".format(snpBed, generangeFname)
+		output = docheckoutput(cmd)
+		snpGeneIDs = accumulateGeneOverlaps(output, len(snpDF.columns))
+		gc.collect()
+		numSnpRows = len(snpDF.index)
+		if (len(snpGeneIDs) != numSnpRows):
+			die("Unexpected number of gene ID values returned from accumulateGeneOverlaps. Got {0}, expected {1}. This can happen if there are duplicate SNP positions in the input. All SNP positions should be unique.".format(len(snpGeneIDs), numSnpRows))
 	
-	snpGenesDF = snpDF.copy()
-	#snpGenesDF.loc[:,numSnpCols] = snpGeneIDs
-	snpGenesDF.loc[:,'geneIDs'] = snpGeneIDs
-	if args.verbose > 2:
-		snpGenesDFFname = outputRoot + '.genesDF.txt'
-		snpGenesDF.to_csv(snpGenesDFFname, sep='\t', index=False)
+		snpGenesDF = snpDF.copy()
+		#snpGenesDF.loc[:,numSnpCols] = snpGeneIDs
+		snpGenesDF.loc[:,'geneIDs'] = snpGeneIDs
+		if args.verbose > 2:
+			snpGenesDFFname = outputRoot + '.genesDF.txt'
+			snpGenesDF.to_csv(snpGenesDFFname, sep='\t', index=False)
 	
 
 #@profile
@@ -1057,10 +1059,14 @@ def computeScores(outputRoot):
 			col_rename_hash = {colname:'x.' + colname for colname in x_cols_old}
 			snpDF.rename(columns=col_rename_hash, inplace=True)
 			colsToOutput.extend(['x.' + colname for colname in x_cols_old])
+		if args.verbose > 1:
+			sys.stderr.write("Writing output to file: " + outputRoot + ".singlescore.txt.gz\n")
 		snpDF.to_csv(f, sep='\t', columns=colsToOutput, index=False, header=True, na_rep="NA", float_format='%.3f')
 	
 	if args.pergene:
 		with gzip.open(outputRoot + ".genescores.txt.gz", 'wb') as f:
+			if args.verbose > 1:
+				sys.stderr.write("Writing output to file: " + outputRoot + ".genescores.txt.gz\n")
 			snpDF.to_csv(f, sep='\t', columns=['chr','pos','name','maxX','maxGeneID','X','GeneIDs'], index=False, header=True, na_rep="NA", float_format='%.3f')
 	
 

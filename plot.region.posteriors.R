@@ -1,23 +1,28 @@
-#!/usr/bin/env Rscript
+#!/software/R-3.3.2/bin/Rscript
+# #!/usr/bin/env Rscript
 library(ggplot2)
 library(scales)
 library(data.table)
+library(plyr)
 library(grid)
 library(gridExtra)
-library(plyr)
+library(cowplot)
 
 options(datatable.verbose = F)
 options(datatable.showProgress = F)
 options(datatable.fread.datatable=T)
 options(stringsAsFactors = F)
+PRFCALC_DIR = "/nfs/teams/team170/jeremy/src/prfcalc/"
 
 myargs <- NULL
 metadata.df <- NULL
-numTopSNPsToLabel <- 6
-plotRegion <- F
+numTopSNPsToLabel <- 4
+plotRegion <- T
 plotZoomin <- F
 plotCandidates <- F
 prfBarPlot <- T
+plotwidth = 12
+plotheight = 10
 
 locusTitleStr <- character(0)
 addChrPosToTitle <- T
@@ -51,6 +56,9 @@ main = function()
   if (is.null(myargs$pCol)) {
     stop("Missing required column: 'pCol' argument should give the name of the P value column.")
   }
+  if (!is.null(myargs$ppaCol)) {
+    df$PPANaive <- as.double(df[,myargs$ppaCol,with=F][[1]])
+  }
   if (is.null(myargs$F)) {
     stop("Missing required column: 'F' argument should give the name of the allele frequency column.")
   }
@@ -78,8 +86,14 @@ main = function()
   if (is.null(myargs$posCol)) {
     stop("Missing required column: 'posCol' argument should give the name of the chromosomal position column.")
   }
+  if (!is.null(myargs$width)) {
+    plotwidth = as.numeric(myargs$width)
+  }
+  if (!is.null(myargs$height)) {
+    plotheight = as.numeric(myargs$height)
+  }
   if (is.null(myargs$metadata)) {
-    myargs$metadata = "/lustre/scratch110/sanger/dg13/share/jeremy/prfscores/epigenomes/epigenome.metadata.txt"
+    myargs$metadata = paste0(PRFCALC_DIR, "epigenome.metadata.txt")
   }
   if (!is.null(myargs$locusTitle)) {
     locusTitleStr <<- myargs$locusTitle
@@ -106,9 +120,11 @@ main = function()
   # Get approximate Bayes Factors for each SNP
   df[,"logBF"] <- getBFFromPval(df)
   
-  # Get the posterior probability of association for each SNP
-  # Requires logBF to have been defined
-  df[,"PPANaive"] <- getSegmentNaivePPAs(df)
+  if (!("PPANaive" %in% colnames(df))) {
+    # Get the posterior probability of association for each SNP
+    # Requires logBF to have been defined
+    df[,"PPANaive"] <- getSegmentNaivePPAs(df)
+  }
   if (!showAllSnps) {
     print("Subsetting to SNPs with Bayes factor >= 0")
     df <- df[df$logBF >= 0,]
@@ -117,7 +133,7 @@ main = function()
   segNames <- unique(df$segment)
   segIndices <- getUniqueIndices(df$segment)
   
-  pdf(file=paste0(myargs$outstem, ".pdf"), width=12, height=10)
+  pdf(file=paste0(myargs$outstem, ".pdf"), width=plotwidth, height=plotheight)
   numSegs <- min(length(segIndices), as.integer(myargs$maxSegments))
   for (i in 1:numSegs) {
     startIndex <- segIndices[[i]][[2]]
@@ -137,9 +153,9 @@ main = function()
     fineMappingTitleStr <<- paste0("\nFine mapping with ", eid, "-", eidName)
       
     if (plotRegion) {
-      if (length(locusTitleStr) <= 0) {
-        #locusTitleStr <<- paste0("FULL LOCUS: ", segname)
-        locusTitleStr <<- "FULL LOCUS: "
+      if (is.null(myargs$locusTitle)) {
+        locusTitleStr <<- paste0("Full locus: ", segname)
+        #locusTitleStr <<- "FULL LOCUS: "
       }
       makePlot(df.seg, TRUE)
     }
@@ -173,7 +189,11 @@ main = function()
     df.seg.cred.o <- df.seg.cred.save[order(-PPA)]
     df.seg.cred.save <- df.seg.cred.o[, cumPPA := cumsum(PPA)][order(as.integer(gwasRank))]
     # Write a table with all SNPs in the credible set
-    write.table(df.seg.cred.save[1:maxCredSetInd], paste0(myargs$outstem, ".credibleset.95.txt"), quote=F, row.names=F, sep="\t", col.names=T)
+    if (i == 1) {
+      write.table(df.seg.cred.save[1:maxCredSetInd], paste0(myargs$outstem, ".credibleset.95.txt"), quote=F, row.names=F, sep="\t", col.names=T, append=F)
+    } else {
+      write.table(df.seg.cred.save[1:maxCredSetInd], paste0(myargs$outstem, ".credibleset.95.txt"), quote=F, row.names=F, sep="\t", col.names=F, append=T)
+    }
 
     # When plotting include at least the top 5 SNPs
     minToInclude <- min(5, dim(df.seg.cred)[1])
@@ -190,15 +210,15 @@ main = function()
     if (plotZoomin) {
       df.zoomin <- df.seg[pos >= credSetMinPos & pos <= credSetMaxPos]
       if (length(locusTitleStr) <= 0) {
-        #locusTitleStr <<- paste0("CREDIBLE SET INTERVAL: ", segname)
-        locusTitleStr <<- "CREDIBLE SET INTERVAL: "
+        locusTitleStr <<- paste0("CREDIBLE SET INTERVAL: ", segname)
+        #locusTitleStr <<- "CREDIBLE SET INTERVAL: "
       }
       makePlot(df.zoomin, TRUE)
     }
     if (plotCandidates) {
       if (length(locusTitleStr) <= 0) {
-        #locusTitleStr <<- paste0("CREDIBLE SET SNPS ONLY: ", segname)
-        locusTitleStr <<- "CREDIBLE SET SNPS ONLY: "
+        locusTitleStr <<- paste0("CREDIBLE SET SNPS ONLY: ", segname)
+        #locusTitleStr <<- "CREDIBLE SET SNPS ONLY: "
       }
       makePlot(df.seg.cred, TRUE)
     }
@@ -240,38 +260,40 @@ makePlot = function(plot.df, labelSNPText)
   labelSNPs <- plot.df[labelSNPIdxs, ]
 
   if (addChrPosToTitle) {
-    plotTitle <- paste0(locusTitleStr, plot.df$chr[1], ":", min(plot.df$pos), "-", max(plot.df$pos), fineMappingTitleStr)
+    plotTitle <- paste0(locusTitleStr, " - ", plot.df$chr[1], ":", min(plot.df$pos), "-", max(plot.df$pos), fineMappingTitleStr)
   } else {
     plotTitle <- paste0(locusTitleStr, fineMappingTitleStr)
   }
   
   angl = 0
   vj = 0.5
+  vjTitle = 0
+  titleMargin = margin(0.15, 0, 0.05, 0, "cm")
   hj = -0.5
   sz = 15
-  gwas.plot <- ggplot(plot.df, aes(x=pos, y=logBF, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title=element_text(size=sz, hjust=0.98, vjust=0.5), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
+  gwas.plot <- ggplot(plot.df, aes(x=pos, y=logBF, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title=element_text(size=sz, hjust=0.98, vjust=vjTitle, margin=titleMargin), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
   gwas.plot <- gwas.plot + geom_point(data=labelSNPs, aes(colour=labelID, size=4))
   gwas.plot <- gwas.plot + ggtitle("GWAS") + ylab("ln(BF)") + theme(legend.position="none")
   #gwas.plot <- ggplot(plot.df, aes(x=pos, y=logBF, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,3)) + theme_grey(sz) + theme(plot.title=element_text(size=sz, hjust=0.98, vjust=-2.5), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
   #gwas.plot <- gwas.plot + ggtitle("RA GWAS") + ylab("ln(BF)") + geom_dl(aes(label=labelID),list("smart.grid", cex = 0.8)) + theme(legend.position="none") 
   
-  gwas.naive.plot <- ggplot(plot.df, aes(x=pos, y=PPANaive, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title=element_text(size=sz, hjust=0.98, vjust=0.5), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
+  gwas.naive.plot <- ggplot(plot.df, aes(x=pos, y=PPANaive, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title=element_text(size=sz, hjust=0.98, vjust=vjTitle, margin=titleMargin), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
   gwas.naive.plot <- gwas.naive.plot + geom_point(data=labelSNPs, aes(colour=labelID, size=4))
   gwas.naive.plot <- gwas.naive.plot + ggtitle("Naive GWAS Posterior") + ylab("Naive PPA") + theme(legend.position="none")
-
-  prf.plot <- ggplot(plot.df, aes(x=pos, y=score, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title = element_text(size=sz, hjust=0.98, vjust=0.5), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
+  
+  prf.plot <- ggplot(plot.df, aes(x=pos, y=score, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title = element_text(size=sz, hjust=0.98, vjust=vjTitle, margin=titleMargin), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
   prf.plot <- prf.plot + geom_point(data=labelSNPs, aes(colour=labelID, size=4))
   eid <- gsub("_PRF", "", myargs$scoreCol)
   eidName <- metadata.df[eid, "Roadmap.Epigenome.name"]
-  prf.plot <- prf.plot + ggtitle(eidName) + ylab("PRF Score") +
+  prf.plot <- prf.plot + ggtitle(paste0(eid, "-", eidName)) + ylab("PRF Score") +
               theme(legend.position="none") +
-              theme(plot.title = element_text(colour="blue"))
+              theme(plot.title = element_text(colour="blue", size=sz, hjust=0.98, vjust=vjTitle))
   prfMaxMinLabel <- paste(max(plot.df$score), "/", plot.df$score[labelSNPIdxs[1]])
   prf.plot <- prf.plot + annotate("text", x = max(plot.df$pos), y = max(plot.df$score), label = prfMaxMinLabel, angle=angl, vjust=1, hjust=1, size=4)
   
-  ppa.plot <- ggplot(plot.df, aes(x=pos, y=PPA, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title = element_text(size=sz, hjust=0.98, vjust=0.5), plot.margin=unit(c(0,3,0,3),"mm"))
+  ppa.plot <- ggplot(plot.df, aes(x=pos, y=PPA, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title = element_text(size=sz, hjust=0.98, vjust=vjTitle, margin=titleMargin), plot.margin=unit(c(0,3,0,3),"mm"))
   ppa.plot <- ppa.plot + geom_point(data=labelSNPs, aes(colour=labelID, size=4))
-  ppa.plot <- ppa.plot + ggtitle(paste0("Posterior - ", eidName)) + ylab("PPA") +
+  ppa.plot <- ppa.plot + ggtitle(paste0("Posterior: ", eid, "-", eidName)) + ylab("PPA") +
               theme(legend.position="none") +
               theme(plot.title = element_text(colour="blue"))
 
@@ -290,15 +312,17 @@ makePlot = function(plot.df, labelSNPText)
   if (!is.null(myargs$extraScores)) {
     scoreNames <- unlist(strsplit(myargs$extraScores, ",", fixed=T))
     for (scoreName in scoreNames) {
+      if (scoreName == myargs$scoreCol) next
+      
       plot.df$score2 <- as.double(unlist(plot.df[,scoreName,with=F]))
       plot.df$pi2 <- getFunctionalPrior(plot.df$score2)
       labelSNPs <- plot.df[labelSNPIdxs,]
       
-      prf.plot2 <- ggplot(plot.df, aes(x=pos, y=score2, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title = element_text(size=sz, hjust=0.98, vjust=0.5), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
+      prf.plot2 <- ggplot(plot.df, aes(x=pos, y=score2, colour=labelID, size=ptSize)) + geom_point() + scale_size(range=c(2,4)) + theme_bw(sz) + theme(plot.title = element_text(size=sz, hjust=0.98, vjust=vjTitle, margin=titleMargin), axis.text.x=element_blank(), axis.title.x=element_blank(), plot.margin=unit(c(0,3,0,3),"mm"))
       prf.plot2 <- prf.plot2 + geom_point(data=labelSNPs, aes(colour=labelID, size=4))
       eid <- gsub("_PRF", "", scoreName)
       eidName <- metadata.df[eid, "Roadmap.Epigenome.name"]
-      prf.plot2 <- prf.plot2 + ggtitle(eidName) + ylab("PRF score") +
+      prf.plot2 <- prf.plot2 + ggtitle(paste0(eid, "-", eidName)) + ylab("PRF score") +
                   theme(legend.position="none")
       prfMaxMinLabel <- paste(max(plot.df$score2), "/", plot.df$score2[labelSNPIdxs[1]])
       prf.plot2 <- prf.plot2 + annotate("text", x = max(plot.df$pos), y = max(plot.df$score2), label = prfMaxMinLabel, angle=angl, vjust=1, hjust=1, size=4)
@@ -314,7 +338,15 @@ makePlot = function(plot.df, labelSNPText)
     }
   }
   plots <- append(plots, list(ppa.plot))
-  grid.arrange(grobs=plots, ncol=1, top=textGrob(plotTitle,gp=gpar(fontface="bold")))
+  #grid.arrange(grobs=plots, ncol=1, top=textGrob(plotTitle,gp=gpar(fontface="bold")))
+
+  numPlots = length(plots)
+  plotHeight = 0.85 / numPlots
+  titleG <- ggdraw() + draw_label(plotTitle, fontface='bold', size = 12)
+  plots = append(list(titleG), plots)
+  # The last plot needs more space allocated to it since it draws the axis
+  g = plot_grid(plotlist=plots, ncol=1, align='v', rel_heights=c(0.08, rep(plotHeight, numPlots-1), plotHeight+0.05))
+  print(g)
 }
 
 makePRFBarPlot = function(plot.df)
@@ -326,12 +358,11 @@ makePRFBarPlot = function(plot.df)
   topGWASSNPs <- order(plot.df$logBF, decreasing=T)[1:end]
   topPPASNPs <- order(plot.df$PPA, decreasing=T)[1:end]
   labelSNPIdxs <- unique(c(topGWASSNPs, topPPASNPs))
-  plot.df$labelID <- ""
-  plot.df[labelSNPIdxs,]$labelID <- plot.df[labelSNPIdxs,]$gwasRank
+  
   bar.df <- plot.df[labelSNPIdxs, ]
   
   if (addChrPosToTitle) {
-    plotTitle <- paste0(locusTitleStr, plot.df$chr[1], ":", min(plot.df$pos), "-", max(plot.df$pos), fineMappingTitleStr)
+    plotTitle <- paste0(locusTitleStr, " - ", plot.df$chr[1], ":", min(plot.df$pos), "-", max(plot.df$pos), fineMappingTitleStr)
   } else {
     plotTitle <- paste0(locusTitleStr, fineMappingTitleStr)
   }
@@ -362,22 +393,16 @@ makePRFBarPlot = function(plot.df)
   melt.df$variable <- gsub("effect-snp.nmotifs", "effect-snp", melt.df$variable, ignore.case=T)
   melt.df$variable <- gsub("switch-snp.nmotifs", "switch-snp", melt.df$variable, ignore.case=T)
   melt.df$variable <- gsub("Enh.Fantom.tpm", "Enh.Fantom", melt.df$variable, ignore.case=T)
+  
+  # Ensure the annotations are ordered consistently, so that we can determine the
+  # position for annotating the annotation name with text.
+  bar.colors <- read.delim(paste0(PRFCALC_DIR, "prf.bar.colors.sorted.txt"))
+  melt.df$variable = factor(melt.df$variable, levels=rev(bar.colors$annotation))
+  melt.df = melt.df[order(-melt.df$variable),]
+  
   dat.pos <- subset(melt.df, value > 0)
   dat.neg <- subset(melt.df, value < 0)
   #dat.neg <- dat.neg[variable != "H3k4me3"]
-  
-  #bar.colors <- read.table("prf.bar.colors.sorted.txt",header=T,sep="\t",comment.char="%",stringsAsFactors=F)
-  #bar.colors$variable = factor(bar.colors$variable, levels=c("TSS Dist","DNase","UTR3","UTR5","FantomEnh","EncodeEnh","EncodeRepr","H3k4me1","H3k4me3","H3k27ac","H3k27me3","H3k36me3","Gerp","Effect-SNP"))
-  #colorValues <- bar.colors$color
-  #names(colorValues) <- bar.colors$variable
-  
-  g_legend <- function(a.gplot) {
-    tmp <- ggplot_gtable(ggplot_build(a.gplot))
-    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-    legend <- tmp$grobs[[leg]]
-    return(legend)
-  }
-  
   dat.pos <- ddply(dat.pos, .(rank_id), transform, pos = cumsum(value) - (0.5 * value))
   dat.neg <- ddply(dat.neg, .(rank_id), transform, pos = cumsum(value) - (0.5 * value))
   #geom_text(aes(label = variable, y = pos), size = 3) +
@@ -396,23 +421,35 @@ makePRFBarPlot = function(plot.df)
     annotate("text", x = dat.pos.lab$rank_id, y=dat.pos.lab$pos, label=dat.pos.lab$variable, size=4) +
     annotate("text", x = dat.neg.lab$rank_id, y=dat.neg.lab$pos, label=dat.neg.lab$variable, size=4)
   #annotate("text", x = dat.pos$rank_id[1], y = dat.pos[dat.pos$rank_id==firstVar&dat.pos$variable=="TSSDist",]$value, label = c("my label"))
-    
+  
+  # g_legend <- function(a.gplot) {
+  #   tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  #   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  #   legend <- tmp$grobs[[leg]]
+  #   return(legend)
+  # }
+  # annotlegend <- g_legend(stackedPlot)
+  
   stackedPlot <- stackedPlot + theme_bw(15) +
     theme(legend.position="none") +
     theme(axis.text.x=element_blank(), axis.title.x=element_blank(), axis.ticks.x=element_blank()) +
-    theme(plot.margin=unit(c(0,0,0.2,0.1),"cm"))
-    
+    theme(plot.margin=unit(c(0,0.2,0.1,0.1),"cm"))
   
   bar.df$total <- apply(as.data.frame(bar.df)[,prfColnames], MARGIN=1, FUN = function(x) {sum(x)})
   sumPlot <- ggplot() + 
     geom_bar(data = bar.df, aes(x=rank_id, y=total), fill="#3366FF", stat = "identity") +
-    theme_bw(14) + theme(legend.position="none", axis.title.x=element_blank(), axis.ticks.x=element_blank(), plot.margin=unit(c(0.3,0,0,0.3),"cm")) + ylab("PRF score")
+    theme_bw(14) + theme(legend.position="none", axis.text.x=element_text(size=12, margin=margin(0, 0, 0.1, 0, "cm")), axis.title.x=element_blank(),
+                         axis.ticks.x=element_blank(), plot.margin=unit(c(0.2,0.2,0,0.2),"cm")) +
+    ylab("PRF score")
   
-  #annotlegend <- g_legend(stackedPlot)
-  #grid.arrange(arrangeGrob(sumPlot, stackedPlot, ncol=1, heights=c(2,5), padding=unit(0, "cm")), annotlegend, widths=c(5,1), ncol=2, top=textGrob(plotTitle,gp=gpar(fontface="bold")))
+  # grid.arrange(arrangeGrob(sumPlot, stackedPlot, ncol=1, heights=c(2,5), padding=unit(0, "cm")), annotlegend, widths=c(5,1), ncol=2, top=textGrob(plotTitle,gp=gpar(fontface="bold")))
+  #grid.arrange(arrangeGrob(sumPlot, stackedPlot, ncol=1, heights=c(2,5), padding=unit(0, "cm")), ncol=1, top=textGrob(plotTitle,gp=gpar(fontface="bold")))
   
-  grid.arrange(arrangeGrob(sumPlot, stackedPlot, ncol=1, heights=c(2,5), padding=unit(0, "cm")), ncol=1, top=textGrob(plotTitle,gp=gpar(fontface="bold")))
+  titleG <- ggdraw() + draw_label(plotTitle, fontface='bold', size = 12) + theme(plot.margin=margin(0,0,0,0,"cm"))
+  g = plot_grid(titleG, sumPlot, stackedPlot, ncol=1, align='v', rel_heights=c(0.7,2.5,6.5))
+  print(g)
 }
+
 
 makeFacetPlot = function(plot.df, labelSNPs)
 {
